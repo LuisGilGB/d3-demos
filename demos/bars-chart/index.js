@@ -38,6 +38,28 @@ d3.json('data.json').then(data => {
     const yAxis = d3.axisLeft(y)
         .ticks(3)
         .tickFormat(d => `${d} units`);
+    
+    // Create bars
+    const bars = chart.selectAll('rect')
+        .data(data);
+    
+    bars.exit().remove();
+
+    y.domain([0, d3.max(data, d => d.value)]);
+    x.domain(data.map(d => d.name));
+
+    bars.attr('width', x.bandwidth)
+        .attr('fill', 'orange')
+        .attr('x', d => x(d.name))
+        .attr('height', d => chartHeight - y(d.value))
+        .attr('y', d => y(d.value));
+    
+    bars.enter()
+        .append('rect')
+        .attr('width', x.bandwidth)
+        .attr('height', d => chartHeight - y(d.value))
+        .attr('x', d => x(d.name))
+        .attr('y', d => y(d.value));
 
     // Call the axis to place them into their respective groups.
     xAxisGroup.call(xAxis);

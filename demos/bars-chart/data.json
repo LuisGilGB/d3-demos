@@ -1,11 +1,14 @@
 [
     {
-        "value": 200
+        "value": 200,
+        "name": "1"
     },
     {
-        "value": 450
+        "value": 450,
+        "name": "2"
     },
     {
-        "value": 160
+        "value": 1600,
+        "name": "3"
     }
 ]
