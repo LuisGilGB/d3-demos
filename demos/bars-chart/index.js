@@ -39,23 +39,28 @@ d3.json('data.json').then(data => {
         .ticks(3)
         .tickFormat(d => `${d} units`);
     
-    // Create bars
+    // Create bars.
     const bars = chart.selectAll('rect')
         .data(data);
     
+    // Remove obsolete bars.
     bars.exit().remove();
 
+    // Define axis domains.
     y.domain([0, d3.max(data, d => d.value)]);
     x.domain(data.map(d => d.name));
 
+    // Set attributes for previously existing bars.
     bars.attr('width', x.bandwidth)
         .attr('fill', 'orange')
         .attr('x', d => x(d.name))
         .attr('height', d => chartHeight - y(d.value))
         .attr('y', d => y(d.value));
     
+    // Append new needed bars and set attributes for them.
     bars.enter()
         .append('rect')
+        .attr('fill', 'orange')
         .attr('width', x.bandwidth)
         .attr('height', d => chartHeight - y(d.value))
         .attr('x', d => x(d.name))
