@@ -62,7 +62,7 @@ d3.json('data.json').then(data => {
         .transition(t)
             .attr('height', d => chartHeight - y(d.value))
             .attr('y', d => y(d.value));
-    
+
     // Append new needed bars and set attributes for them.
     bars.enter()
         .append('rect')
