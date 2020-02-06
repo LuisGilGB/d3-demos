@@ -4,6 +4,8 @@ const HEIGHT = 600;
 const SMALL_MARGIN = 20;
 const LARGE_MARGIN = 100;
 
+const TRANSITION_DURATION = 500;
+
 const margin = {top: SMALL_MARGIN, right: SMALL_MARGIN, bottom: LARGE_MARGIN, left: LARGE_MARGIN}
 const chartWidth = WIDTH - margin.left - margin.right;
 const chartHeight = HEIGHT - margin.top - margin.bottom;
@@ -33,6 +35,9 @@ d3.json('data.json').then(data => {
     const y = d3.scaleLinear()
         .range([chartHeight, 0]);
 
+    // Define standard transition.
+    const t = d3.transition().duration(TRANSITION_DURATION);
+
     // Create x (bottom) and y (left) axis.
     const xAxis = d3.axisBottom(x);
     const yAxis = d3.axisLeft(y)
@@ -51,20 +56,24 @@ d3.json('data.json').then(data => {
     x.domain(data.map(d => d.name));
 
     // Set attributes for previously existing bars.
-    bars.attr('width', x.bandwidth)
-        .attr('fill', 'orange')
+    bars.attr('fill', 'orange')
+        .attr('width', x.bandwidth)
         .attr('x', d => x(d.name))
-        .attr('height', d => chartHeight - y(d.value))
-        .attr('y', d => y(d.value));
+        .transition(t)
+            .attr('height', d => chartHeight - y(d.value))
+            .attr('y', d => y(d.value));
     
     // Append new needed bars and set attributes for them.
     bars.enter()
         .append('rect')
         .attr('fill', 'orange')
         .attr('width', x.bandwidth)
-        .attr('height', d => chartHeight - y(d.value))
+        .attr('height', 0)
         .attr('x', d => x(d.name))
-        .attr('y', d => y(d.value));
+        .attr('y', d => chartHeight)
+        .transition(t)
+            .attr('height', d => chartHeight - y(d.value))
+            .attr('y', d => y(d.value));
 
     // Call the axis to place them into their respective groups.
     xAxisGroup.call(xAxis);
