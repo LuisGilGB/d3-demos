@@ -2,9 +2,48 @@
     <head>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="ie-edge">
+        <!-- Compiled and minified CSS -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
         <title>D3 Donut Chart</title>
     </head>
-    <body>
+    <body class="indigo">
+        <header class="indigo darken-1 section">
+            <h2 class="demo-title center white-text">Donut Chart</h2>
+            <p class="demo-description flow-text grey-text center text-lighten-2">
+                Just a description telling whatever the demo does
+            </p>
+        </header>
+        <div class="container section">
+            <div class="row">
+                <div class="form-wrapper col s12 m6">
+                    <form class="card z-depth-0">
+                        <div class="card-content">
+                            <span class="card-title indigo-text">Add item:</span>
+                            <div class="input-field">
+                                <input type="text" id="itemName">
+                                <label for="name">Item name</label>
+                            </div>
+                            <div class="input-field">
+                                <input type="text" id="itemValue">
+                                <label for="value">Item value</label>
+                            </div>
+                            <div class="input-field center">
+                                <button class="btn-large pink white-text">Add item</button>
+                            </div>
+                            <div class="input-field center">
+                                <p id="error" class="red-text"></p>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="donut-wrapper col s12 m5 push-el">
+                    <div class="canvas"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Compiled and minified JavaScript -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
         <script src="https://d3js.org/d3.v5.min.js"></script>
         <script src="index.js"></script>
         <script src="graph.js"></script>
