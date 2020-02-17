@@ -17,6 +17,8 @@ const center = {
     y: dims.height / 2 + CHART_MARGIN
 }
 
+const canvasEl = document.querySelector('.canvas');
+
 // The SVG element
 const svg = d3.select('.canvas')
     .append('svg')
@@ -63,5 +65,9 @@ const update = data => {
         .attr('stroke-width', 3)
         .attr('fill', d => color(d.data.itemName));
 }
+
+document.addEventListener('itemadded', e => {
+    update(chartData);
+}, false);
 
 update(chartData);
