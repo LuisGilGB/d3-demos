@@ -57,17 +57,17 @@ const update = data => {
         .attrTween('d', arcTweenExit)
         .remove();
 
-    donutPortions.attr('d', arcPath)
-        .transition().duration(TRANSITION_DURATION)
+    donutPortions.transition().duration(TRANSITION_DURATION)
         .attrTween('d', arcTweenUpdate);
 
     donutPortions.enter()
         .append('path')
         .attr('class', 'arc donut-portion')
-        .attr('d', arcPath)
         .attr('stroke', '#fff')
         .attr('stroke-width', 3)
+        .attr('d', arcPath)
         .attr('fill', d => color(d.data.itemName))
+        .each(function (d) {this._currentD = d})
         .transition().duration(TRANSITION_DURATION).attrTween('d', arcTweenEnter);
 }
 
@@ -83,21 +83,17 @@ const arcTweenEnter = d => {
 const arcTweenExit = d => {
     const interp = d3.interpolate(d.startAngle, d.endAngle);
 
-    return arcPath({
+    return t => arcPath({
         ...d,
         startAngle: interp(t)
     });
 }
 
-const arcTweenUpdate = d => {
-    console.log('Updating d');
-    console.log(d)
-    const interp = d3.interpolate(d.endAngle, d.startAngle);
+function arcTweenUpdate (d) {
+    const interp = d3.interpolate(this._currentD, d);
+    this._currentD = interp(1);
 
-    return t => arcPath({
-        ...d,
-        startAngle: interp(t)
-    });
+    return t => arcPath(interp(t));
 }
 
 document.addEventListener('itemadded', e => {
