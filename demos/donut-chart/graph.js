@@ -1,6 +1,8 @@
 const RADIUS = 150;
 const CHART_MARGIN = 5;
-const EXTRA_SIZE = 150;
+const EXTRA_SIZE = 120;
+
+const TRANSITION_DURATION = 750;
 
 const getDimsFromRadius = r => {
     const size = r * 2;
@@ -50,12 +52,14 @@ const update = data => {
     const donutPortions = donutChart.selectAll('path')
         .data(pie(data));
 
-    donutPortions.exit().remove();
+    donutPortions.exit()
+        .transition().duration(TRANSITION_DURATION)
+        .attrTween('d', arcTweenExit)
+        .remove();
 
     donutPortions.attr('d', arcPath)
-        .attr('stroke', '#fff')
-        .attr('stroke-width', 3)
-        .attr('fill', d => color(d.data.itemName));
+        .transition().duration(TRANSITION_DURATION)
+        .attrTween('d', arcTweenUpdate);
 
     donutPortions.enter()
         .append('path')
@@ -63,7 +67,37 @@ const update = data => {
         .attr('d', arcPath)
         .attr('stroke', '#fff')
         .attr('stroke-width', 3)
-        .attr('fill', d => color(d.data.itemName));
+        .attr('fill', d => color(d.data.itemName))
+        .transition().duration(TRANSITION_DURATION).attrTween('d', arcTweenEnter);
+}
+
+const arcTweenEnter = d => {
+    const interp = d3.interpolate(d.endAngle, d.startAngle);
+
+    return t => arcPath({
+        ...d,
+        startAngle: interp(t)
+    });
+}
+
+const arcTweenExit = d => {
+    const interp = d3.interpolate(d.startAngle, d.endAngle);
+
+    return arcPath({
+        ...d,
+        startAngle: interp(t)
+    });
+}
+
+const arcTweenUpdate = d => {
+    console.log('Updating d');
+    console.log(d)
+    const interp = d3.interpolate(d.endAngle, d.startAngle);
+
+    return t => arcPath({
+        ...d,
+        startAngle: interp(t)
+    });
 }
 
 document.addEventListener('itemadded', e => {
