@@ -8,6 +8,7 @@ const LEGEND_MARGIN = {
 }
 
 const TRANSITION_DURATION = 750;
+const DONUT_OVER_TRANSITION_DURATION = 320;
 
 const getDimsFromRadius = r => {
     const size = r * 2;
@@ -87,6 +88,10 @@ const update = data => {
         .attr('fill', d => color(d.data.itemName))
         .each(function (d) {this._currentD = d})
         .transition().duration(TRANSITION_DURATION).attrTween('d', arcTweenEnter);
+    
+    donutChart.selectAll('path')
+        .on('mouseover', onDonutPortionMouseOver)
+        .on('mouseout', onDonutPortionMouseOut);
 }
 
 const arcTweenEnter = d => {
@@ -112,6 +117,18 @@ function arcTweenUpdate (d) {
     this._currentD = interp(1);
 
     return t => arcPath(interp(t));
+}
+
+const onDonutPortionMouseOver = (pieData, i, pathsArray) => {
+    d3.select(pathsArray[i])
+        .transition('donutPortionOver').duration(DONUT_OVER_TRANSITION_DURATION)
+        .attr('fill', '#fff');
+}
+
+const onDonutPortionMouseOut = (pieData, i, pathsArray) => {
+    d3.select(pathsArray[i])
+        .transition('donutPortionOver').duration(DONUT_OVER_TRANSITION_DURATION)
+        .attr('fill', color(pieData.data.itemName));
 }
 
 document.addEventListener('itemadded', e => {
