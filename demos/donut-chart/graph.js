@@ -2,6 +2,11 @@ const RADIUS = 150;
 const CHART_MARGIN = 5;
 const EXTRA_SIZE = 120;
 
+const LEGEND_MARGIN = {
+    left: 40,
+    top: 10
+}
+
 const TRANSITION_DURATION = 750;
 
 const getDimsFromRadius = r => {
@@ -46,8 +51,21 @@ const arcPath = d3.arc()
 // Returns a color scale for the chart's items.
 const color = d3.scaleOrdinal(d3['schemeSet2']);
 
+// A legend for the chart
+const legendGroup = svg.append('g')
+    .attr('transform', `translate(${dims.width + LEGEND_MARGIN.left}, ${LEGEND_MARGIN.top})`);
+
+const legend = d3.legendColor()
+    .shape('path', d3.symbol().type(d3.symbolCircle)())
+    .shapePadding(10)
+    .scale(color);
+
 const update = data => {
     color.domain(data.map(d => d.itemName));
+
+    // This code is what updates legend visualization in conformity with data changes.
+    legendGroup.call(legend);
+    legendGroup.selectAll('text').attr('fill', 'white');
 
     const donutPortions = donutChart.selectAll('path')
         .data(pie(data));
