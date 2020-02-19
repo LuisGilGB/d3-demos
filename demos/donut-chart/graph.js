@@ -61,6 +61,16 @@ const legend = d3.legendColor()
     .shapePadding(10)
     .scale(color);
 
+const tip = d3.tip()
+    .attr('class', 'tip card')
+    .html(({data}) => (
+        `<div class="info name">Name: ${data.itemName}</div>
+        <div class="info value">Value: ${data.itemValue}</div>
+        <div class="delete">Click slice to delete</div>`
+    ));
+
+donutChart.call(tip);
+
 const update = data => {
     color.domain(data.map(d => d.itemName));
 
@@ -90,8 +100,14 @@ const update = data => {
         .transition().duration(TRANSITION_DURATION).attrTween('d', arcTweenEnter);
     
     donutChart.selectAll('path')
-        .on('mouseover', onDonutPortionMouseOver)
-        .on('mouseout', onDonutPortionMouseOut);
+        .on('mouseover', (d,i,n) => {
+            tip.show(d, n[i]);
+            onDonutPortionMouseOver(d,i,n);
+        })
+        .on('mouseout', (d,i,n) => {
+            tip.hide();
+            onDonutPortionMouseOut(d,i,n);
+        });
 }
 
 const arcTweenEnter = d => {
