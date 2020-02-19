@@ -107,7 +107,8 @@ const update = data => {
         .on('mouseout', (d,i,n) => {
             tip.hide();
             onDonutPortionMouseOut(d,i,n);
-        });
+        })
+        .on('click', onDonutPortionClick);
 }
 
 const arcTweenEnter = d => {
@@ -145,6 +146,12 @@ const onDonutPortionMouseOut = (pieData, i, pathsArray) => {
     d3.select(pathsArray[i])
         .transition('donutPortionOver').duration(DONUT_OVER_TRANSITION_DURATION)
         .attr('fill', color(pieData.data.itemName));
+}
+
+const onDonutPortionClick = ({data}) => {
+    const {itemName: name} = data;
+    chartData = chartData.filter(({itemName}) => itemName !== name);
+    update(chartData);
 }
 
 document.addEventListener('itemadded', e => {

@@ -1,4 +1,4 @@
-const chartData = [
+let chartData = [
     {
         itemName: 'First',
         itemValue: 3
